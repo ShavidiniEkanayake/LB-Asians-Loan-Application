@@ -1,5 +1,6 @@
 import React from 'react'
 import Header from '../Components/header.jsx'
+import Footer from '../Components/footer.jsx'
 import MainImage from '../Assests/MainImage.svg'
 
 const FirstElement = () => {
@@ -21,6 +22,7 @@ function Loan() {
       <div>
         <Header />
         <FirstElement/>
+        <Footer/>
       </div>
     );
   }
