@@ -24,7 +24,7 @@ function Header() {
   return (
     <header
       className={`${
-        scrolling ? "bg-dark1 opacity-100" : "bg-dark1 opacity-68"
+        scrolling ? "bg-dark1 opacity-100" : "bg-dark1 bg-opacity-60"
       } fixed top-0 left-0 right-0 z-50 p-4 flex items-center justify-between transition-opacity duration-300`}
     >
       {/* Logo */}
