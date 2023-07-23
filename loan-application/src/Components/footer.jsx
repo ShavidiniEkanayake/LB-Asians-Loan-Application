@@ -85,7 +85,7 @@ const Footer = () => {
         </div>
       </div>
       <div className=" px-14">
-        <div className="w-full h-[00.5px] bg-white"></div>
+        <div className="w-full h-[0.5px] bg-white"></div>
       </div>
 
       <div className="flex flex-row px-14 bg-dark1">

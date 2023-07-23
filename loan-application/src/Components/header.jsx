@@ -36,22 +36,28 @@ function Header() {
       <nav>
         <ul className="flex items-center space-x-4 mr-32">
           <li>
-            <a href="/" className="text-white font-semibold px-8">
+            <a href="/" className="text-white font-semibold px-6 hover:text-light hover:text-[17px]">
               Home
             </a>
           </li>
+          
           <li>
-            <a href="/loan" className="text-white font-semibold px-8">
+            <a href="/about" className="text-white font-semibold px-6 hover:text-light hover:text-[17px]">
+              About Us
+            </a>
+          </li>
+          <li>
+            <a href="/loan" className="text-white font-semibold px-6 hover:text-light hover:text-[17px]">
               Loan
             </a>
           </li>
           <li>
-            <a href="/about" className="text-white font-semibold px-8">
-              About Us
+            <a href="/loan" className="text-white font-semibold px-6 hover:text-light hover:text-[17px]">
+              Contact Us
             </a>
           </li>
           <li className="px-8">
-            <button className="border-2 border-white text-white font-semibold py-2 px-7 rounded-md">
+            <button className="border-2 border-white text-white font-semibold py-2 px-5 rounded-md hover:text-light  hover:text-[17px] hover:border-light">
               Get Started
             </button>
           </li>

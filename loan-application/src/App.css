@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom checkbox styles */
+.custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    border: 3px solid #697A85; /* Change border color to #697A85 */
+    border-radius: 30%; /* Make the checkbox rounded */
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    cursor: pointer;
+    margin-top: 10%;
+  }
+  
+  .custom-checkbox input[type="checkbox"]:checked {
+    background-color: #176B87; /* Change the checkbox background color when checked */
+    border-color: #176B87; /* Change border color to #176B87 when checked */
+  }
+
+  /* Custom radio button styles */
+.custom-radio {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .hidden-radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .radio-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Radio button styles for selected state */
+  .hidden-radio:checked + .radio-icon::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #000;
+  }
+  
+  
