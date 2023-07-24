@@ -44,6 +44,18 @@ const NavCard = () => {
   const [UScitizen, setUSCitizen] = useState("");
   const [permenentAussie, setPermenentAussie] = useState("");
   const [showTaxTextInput, setShowTextInput] = useState(false);
+  const [showYesInput, setShowYesInput] = useState(false);
+  const [showNoInput, setShowNoInput] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [country, setCountry] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [hasTIN, setHasTIN] = useState("");
+  const [showInputAndTable, setShowInputAndTable] = useState(false);
+  const [tinState, setTinState] = useState("");
+  const [explanationState, setexplanation] = useState("");
+  const [reasonIfNoTINState, setreasonIfNoTIN] = useState("");
+  const [OwnerWithMortgage, setOwnerWithMortgage] = useState("");
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -51,6 +63,7 @@ const NavCard = () => {
 
   const handlePrefixChange = (event) => {
     setPrefix(event.target.value);
+    setShowDropdown(false);
   };
 
   const handleNameChange = (event) => {
@@ -90,15 +103,43 @@ const NavCard = () => {
 
   const handleUSCitizen = (event) => {
     setUSCitizen(event.target.value);
-     // Show the ext input field
-     setShowTextInput(
-     event.target.value === "Yes"
-    );
-  }
+    // Show the ext input field
+    setShowTextInput(event.target.value === "Yes");
+  };
 
   const handlePermenentAussie = (event) => {
+    if (event.target.value === "Yes") {
+      setShowInputAndTable(true);
+    } else {
+      setShowInputAndTable(false);
+    }
     setPermenentAussie(event.target.value);
-  }
+
+    setShowYesInput(event.target.value === "Yes");
+  };
+
+  const handeOwnerWithMortgage = (event) => {
+    if (event.target.value === "OwnerWithMortgage") {
+      setOwnerWithMortgage(event.target.value);
+    } else if (event.target.value === "LivingWithRelatives") {
+      setOwnerWithMortgage(event.target.value);
+    }
+  };
+
+  const handleCountryChange = (e) => {
+    setSelectedCountry(e.target.value);
+  };
+
+  const handleAddToTable = () => {
+    // Assuming you have other states to manage TIN, Reason if No TIN, and explanation
+    const newData = {
+      country: selectedCountry,
+      tin: tinState,
+      reasonIfNoTIN: reasonIfNoTINState,
+      explanation: explanationState,
+    };
+    setTableData((prevData) => [...prevData, newData]);
+  };
 
   const CustomRadioButton = ({ name, value, checked, onChange }) => {
     return (
@@ -114,6 +155,21 @@ const NavCard = () => {
         <span className="radio-icon"></span>
         {value}
       </label>
+    );
+  };
+
+  const CustomDropdownOption = ({ value, selected, onClick }) => {
+    return (
+      <div
+        className={`py-2 px-4 cursor-pointer ${
+          selected
+            ? "bg-gray-300"
+            : "bg-white hover:bg-dark2 rounded-md hover:text-white hover:text-[17px]"
+        }`}
+        onClick={() => onClick(value)}
+      >
+        {value}
+      </div>
     );
   };
 
@@ -243,22 +299,45 @@ const NavCard = () => {
                 </p>
 
                 <form className="flex flex-wrap  mt-5 ustify-center">
-                  <div className="w-1/2 pr-3 mb-5">
+                  <div className="w-1/2 pr-3 mb-10">
                     <label
                       htmlFor="prefix"
                       className="text-label font-semibold hover:text-[17px] hover:text-dark1"
                     >
                       Prefix
                     </label>
-                    <select
+                    <div
                       id="prefix"
-                      className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
-                      onChange={(e) => setPrefix(e.target.value)}
+                      className="border-2 rounded-[0.28rem] px-2 py-2  mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                      onClick={() => setShowDropdown(!showDropdown)}
                     >
-                      <option value="Mr">Mr</option>
-                      <option value="Mrs">Mrs</option>
-                      <option value="Ms">Ms</option>
-                    </select>
+                      {prefix || "Select a prefix"}{" "}
+                      {/* Display the selected value or a placeholder */}
+                    </div>
+                    {showDropdown && (
+                      <div className="bg-white border-gray-300 rounded-[0.28rem] absolute w-[20.5rem] ">
+                        <CustomDropdownOption
+                          value="Mr"
+                          selected={prefix === "Mr"}
+                          onClick={handlePrefixChange}
+                        />
+                        <CustomDropdownOption
+                          value="Mrs"
+                          selected={prefix === "Mrs"}
+                          onClick={handlePrefixChange}
+                        />
+                        <CustomDropdownOption
+                          value="Miss"
+                          selected={prefix === "Miss"}
+                          onClick={handlePrefixChange}
+                        />
+                        <CustomDropdownOption
+                          value="Ms"
+                          selected={prefix === "Ms"}
+                          onClick={handlePrefixChange}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="w-1/2 pl-3">
@@ -420,7 +499,7 @@ const NavCard = () => {
                     >
                       Permanent Australian resident
                     </label>
-                    <div className="flex">
+                    <div className="flex mt-4">
                       <CustomRadioButton
                         name="resident"
                         value="Yes"
@@ -443,7 +522,7 @@ const NavCard = () => {
                     >
                       Are you a U.S. citizen or U.S. resident for tax purposes
                     </label>
-                    <div className="flex">
+                    <div className="flex mt-4 mb-5">
                       <CustomRadioButton
                         name="taxCitizen"
                         value="Yes"
@@ -459,12 +538,21 @@ const NavCard = () => {
                     </div>
                     {/* Show the text input field if the user selected "Yes" for the specific question */}
                     {showTaxTextInput && (
-                      <input
-                        type="text"
-                        id="taxTextInput"
-                        className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-1/2 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
-                        placeholder="Tax Input Field"
-                      />
+                      <div className="w-1/2">
+                        <label
+                          htmlFor="TIN"
+                          className="text-label font-semibold hover:text-[17px] hover:text-dark1."
+                        >
+                          Taxpayer Identification Number (TIN)
+                        </label>
+                        <input
+                          type="text"
+                          id="TIN"
+                          className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                          placeholder="Taxpayer Identification Number (TIN)"
+                          onChange={(e) => setName(e.target.value)}
+                        />
+                      </div>
                     )}
                   </div>
 
@@ -475,32 +563,348 @@ const NavCard = () => {
                     >
                       Permanent Australian resident
                     </label>
-                    <div className="flex">
+                    <div className="flex mt-4 mb-5">
                       <CustomRadioButton
-                        name="resident"
+                        name="PermenentAussie"
                         value="Yes"
-                        checked={resident === "Yes"}
-                        onChange={handleResidentChange}
+                        checked={permenentAussie === "Yes"}
+                        onChange={handlePermenentAussie}
                       />
                       <CustomRadioButton
-                        name="resident"
+                        name="PermenentAussie"
                         value="No"
-                        checked={resident === "No"}
-                        onChange={handleResidentChange}
+                        checked={permenentAussie === "No"}
+                        onChange={handlePermenentAussie}
+                      />
+                    </div>
+                    {showYesInput && (
+                      <div className="w-1/2 pr-3 mb-10">
+                        <label
+                          htmlFor="country"
+                          className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                        >
+                          Country
+                        </label>
+                        <select
+                          id="country"
+                          className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                          onChange={(e) => setPrefix(e.target.value)}
+                        >
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="C">C</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              </div>
+            )}
+            {activeTab === "Contact Details" && (
+              <div className="p-4 ">
+                <p className="font-bold text-dark1 text-lg">Contact Details</p>
+                <p className="text-dark1 pt-4 font-normal">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+
+                <form className="flex flex-wrap mt-5 justify-center">
+                  <div className="w-1/2 pr-3 mb-7">
+                    <label
+                      for="telNumber"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Home telephone number
+                    </label>
+                    <div class="flex items-center border-2 rounded-[0.25rem] mt-3 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]">
+                      <span className="inline-block mr-2 font-medium text-fieldboarder p-2 rounded-l-[0.25rem]">
+                        +91 |
+                      </span>
+                      <input
+                        type="text"
+                        id="telNumber"
+                        placeholder="4892001090"
+                        class="flex-1 appearance-none focus:outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-1/2 pl-3 mb-7">
+                    <label
+                      htmlFor="email"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Email address
+                    </label>
+                    <input
+                      type="text"
+                      id="email"
+                      className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                      placeholder="Email Address"
+                    />
+                  </div>
+
+                  <div className="w-1/2 pr-3 mb-10">
+                    <label
+                      for="telNumber"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Mobile number
+                    </label>
+                    <div class="flex items-center border-2 rounded-[0.25rem] mt-3 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]">
+                      <span className="inline-block mr-2 font-medium text-fieldboarder p-2 rounded-l-[0.25rem]">
+                        +91 |
+                      </span>
+                      <input
+                        type="text"
+                        id="telNumber"
+                        placeholder="4892001090"
+                        class="flex-1 appearance-none focus:outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-1/2 pl-3 mb-10">
+                    <label
+                      for="telNumber"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Work telephone number
+                    </label>
+                    <div class="flex items-center border-2 rounded-[0.25rem] mt-3 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]">
+                      <span className="inline-block mr-2 font-medium text-fieldboarder p-2 rounded-l-[0.25rem]">
+                        +91 |
+                      </span>
+                      <input
+                        type="text"
+                        id="telNumber"
+                        placeholder="4892001090"
+                        class="flex-1 appearance-none focus:outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-full mb-10">
+                    <label
+                      for="homeAddress"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Home address
+                    </label>
+
+                    <div className="flex mt-4">
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-l-[0.28rem] px-2 py-2 mb-4  w-3/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="State"
+                      />
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-r-[0.28rem] px-2 py-2 mb-4 w-1/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="Postal Code"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-full mb-10">
+                    <label
+                      for="homeAddress"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Postal address (If different to above)
+                    </label>
+
+                    <div className="flex mt-4">
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-l-[0.28rem] px-2 py-2 mb-4  w-3/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="State"
+                      />
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-r-[0.28rem] px-2 py-2 mb-4 w-1/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="Postal Code"
                       />
                     </div>
                   </div>
                 </form>
               </div>
             )}
-            {activeTab === "Contact Details" && (
-              <div className="p-4">Contact Details Form Content</div>
-            )}
             {activeTab === "Living Arrangements" && (
-              <div className="p-4">Living Arrangements Form Content</div>
+              <div className="p-4 ">
+                <p className="font-bold text-dark1 text-lg">
+                  Living Arrangements Form Content
+                </p>
+                <p className="text-dark1 pt-4 font-normal">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+
+                <form className="flex flex-wrap mt-5 justify-center">
+                  <div className="w-full pr-3 mb-5">
+                    <div className="flex mt-4 mb-5">
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="OwnerWithMortgage"
+                          value="OwnerWithMortgage"
+                          checked={OwnerWithMortgage === "OwnerWithMortgage"}
+                          onChange={handeOwnerWithMortgage}
+                        />
+                      </diiv>
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="LivingWithRelatives"
+                          value="LivingWithRelatives"
+                          checked={permenentAussie === "LivingWithRelatives"}
+                          onChange={handlePermenentAussie}
+                        />
+                      </diiv>
+                    </div>
+
+                    <div className="flex mt-4 mb-5">
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="OwnerWithMortgage"
+                          value="OwnerWithMortgage"
+                          checked={OwnerWithMortgage === "Renting"}
+                          onChange={handeOwnerWithMortgage}
+                        />
+                      </diiv>
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="LivingWithRelatives"
+                          value="Living with relatives"
+                          checked={permenentAussie === "Boarding"}
+                          onChange={handlePermenentAussie}
+                        />
+                      </diiv>
+                    </div>
+
+                    <div className="flex mt-4 mb-5">
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="OwnerWithMortgage"
+                          value="OwnerWithMortgage"
+                          checked={OwnerWithMortgage === "Owner no mortgage"}
+                          onChange={handeOwnerWithMortgage}
+                        />
+                      </diiv>
+                      <diiv className="w-1/2">
+                        <CustomRadioButton
+                          name="LivingWithRelatives"
+                          value="Living with relatives"
+                          checked={permenentAussie === "Supplied by employer"}
+                          onChange={handlePermenentAussie}
+                        />
+                      </diiv>
+                    </div>
+                  </div>
+
+                  <div className="w-full mb-7">
+                    <label
+                      htmlFor="ownerName"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Name of owner / agent
+                    </label>
+                    <input
+                      type="text"
+                      id="ownerName"
+                      className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Name of owner / agent"
+                    />
+                  </div>
+
+                  <div className="w-1/2 pr-3 mb-10">
+                    <label
+                      for="telNumber"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Telephone Number
+                    </label>
+                    <div class="flex items-center border-2 rounded-[0.25rem] mt-3 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]">
+                      <span className="inline-block mr-2 font-medium text-fieldboarder p-2 rounded-l-[0.25rem]">
+                        +91 |
+                      </span>
+                      <input
+                        type="text"
+                        id="telNumber"
+                        placeholder="4892001090"
+                        class="flex-1 appearance-none focus:outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-1/2 pl-3">
+                    <label
+                      htmlFor="datepicker"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      When did you move to the above address
+                    </label>
+                    <div className="border-2 rounded-[0.28rem] px-2 py-2 mb-4 mt-3 w-full border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]">
+                      <DatePicker
+                        id="datepicker"
+                        selected={selectedDate}
+                        onChange={handleDateChange}
+                        placeholderText="Select Date"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-full mb-10">
+                    <label
+                      for="homeAddress"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Previous home address (If under 3 years at present home)
+                    </label>
+
+                    <div className="flex mt-4">
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-l-[0.28rem] px-2 py-2 mb-4  w-3/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="State"
+                      />
+                      <input
+                        type="text"
+                        id="sureName"
+                        className="border-2 rounded-r-[0.28rem] px-2 py-2 mb-4 w-1/4 border-fieldboarder hover:text-[17px] hover:text-dark1 hover:border-dark1 hover:border-[3px]"
+                        placeholder="Postal Code"
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
             )}
             {activeTab === "Confirmation" && (
-              <div className="p-4">Confirmation Form Content</div>
+              <div className="p-4 ">
+              <p className="font-bold text-dark1 text-lg">
+              Confirmation Form Content
+              </p>
+              <p className="text-dark1 pt-4 font-normal">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+              <p className="text-dark1 pt-4 font-normal">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+              <p className="text-dark1 pt-4 font-normal">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+              </div>
             )}
           </div>
 

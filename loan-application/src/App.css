@@ -26,6 +26,7 @@
     margin-right: 10px;
     cursor: pointer;
     font-weight: 600;
+    color: #667783;
   }
   
   .hidden-radio {
@@ -36,11 +37,11 @@
   }
   
   .radio-icon {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #000;
+    width: 15px;
+    height: 15px;
+    border: 3px solid #697A85;
     border-radius: 50%;
-    margin-right: 8px;
+    margin-right: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -49,10 +50,10 @@
   /* Radio button styles for selected state */
   .hidden-radio:checked + .radio-icon::before {
     content: "";
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background-color: #000;
+    background-color: #176B87;
   }
   
   
