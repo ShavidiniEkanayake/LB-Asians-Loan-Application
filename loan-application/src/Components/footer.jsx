@@ -90,7 +90,7 @@ const Footer = () => {
 
       <div className="flex flex-row px-14 bg-dark1">
         <p className="text-sm mt-4 mb-7 text-white font-thin">
-          Copyright © 2023 -FoodLabs - All Rights Reserved.
+        Copyright © 2023 -LBAsian - All Rights Reserved.
         </p>
         <div className="flex flex-row ml-[46rem]"></div>
       </div>

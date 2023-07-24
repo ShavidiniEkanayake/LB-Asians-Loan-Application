@@ -42,7 +42,8 @@ const NavCard = () => {
   const [stateofIssue, setStateofIssue] = useState("");
   const [resident, setResident] = useState("");
   const [UScitizen, setUSCitizen] = useState("");
-  const [showTaxTextInput, setShowTaxTextInput] = useState(false);
+  const [permenentAussie, setPermenentAussie] = useState("");
+  const [showTaxTextInput, setShowTextInput] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -85,15 +86,18 @@ const NavCard = () => {
 
   const handleResidentChange = (event) => {
     setResident(event.target.value);
-   
   };
 
   const handleUSCitizen = (event) => {
     setUSCitizen(event.target.value);
      // Show the ext input field
-     setShowTaxTextInput(
+     setShowTextInput(
      event.target.value === "Yes"
     );
+  }
+
+  const handlePermenentAussie = (event) => {
+    setPermenentAussie(event.target.value);
   }
 
   const CustomRadioButton = ({ name, value, checked, onChange }) => {
@@ -462,6 +466,29 @@ const NavCard = () => {
                         placeholder="Tax Input Field"
                       />
                     )}
+                  </div>
+
+                  <div className="w-full pr-3 mb-5">
+                    <label
+                      htmlFor="prefix"
+                      className="text-label font-semibold hover:text-[17px] hover:text-dark1"
+                    >
+                      Permanent Australian resident
+                    </label>
+                    <div className="flex">
+                      <CustomRadioButton
+                        name="resident"
+                        value="Yes"
+                        checked={resident === "Yes"}
+                        onChange={handleResidentChange}
+                      />
+                      <CustomRadioButton
+                        name="resident"
+                        value="No"
+                        checked={resident === "No"}
+                        onChange={handleResidentChange}
+                      />
+                    </div>
                   </div>
                 </form>
               </div>
